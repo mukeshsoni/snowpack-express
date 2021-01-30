@@ -13,8 +13,28 @@ const app = express();
 const port = 3000;
 
 function endsWith(str, subStr) {
-	return str.indexOf(subStr) === str.length - subStr.length
+  return str.indexOf(subStr) === str.length - subStr.length;
 }
+
+// We can hook up all api paths to our regular server which serves both apis as well
+// as static assets
+// Which means for those paths, this server is just a proxy
+// let's simulate that with an api path
+app.get("/api/people", (req, res) => {
+  const people = [
+    {
+      name: "Mukesh"
+    },
+    {
+      name: "Ramesh"
+    },
+    {
+      name: "Rakesh"
+    }
+  ];
+
+  res.json(people);
+});
 
 // to serve js, css etc. files which will be built by snowpack
 // we start a snowpack server which takes care of the watch part
@@ -24,12 +44,12 @@ function endsWith(str, subStr) {
 // and pass it through loadUrl because snowpack server adds some scripts for
 // 1. hrm client
 // 2. for error overlay
-app.use(async (req, res, next) => {
+app.get("*", async (req, res, next) => {
   console.log("got request", req.url);
   try {
     const buildResult = await snowpackServer.loadUrl(req.url);
     if (endsWith(req.url, ".js")) {
-      res.contentType("application/JavaScript");
+      res.contentType("application/javascript");
     }
     res.send(decoder.write(buildResult.contents));
   } catch (e) {
@@ -37,9 +57,6 @@ app.use(async (req, res, next) => {
   }
 });
 
-// TODO: We can hook up all api paths to our regular server which serves both apis as well
-// as static assets
-// Which means for those paths, this server is just a proxy
 app.listen(port, () => {
   console.log(`Listening at http://localhost:${port}`);
 });
