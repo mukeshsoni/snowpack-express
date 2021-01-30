@@ -1,0 +1,17 @@
+{
+  "name": "test-snowpack",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "dev": "nodemon --ignore 'build/' custom-server.js",
+    "build": "snowpack build"
+  },
+  "devDependencies": {
+    "snowpack": "^3.0.11"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "nodemon": "^2.0.7"
+  }
+}
